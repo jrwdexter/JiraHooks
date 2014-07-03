@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# Hook script which prepends the commit message with the current branch.
+
+BRANCH_NAME=$(git symbolic-ref --short HEAD | sed 's/.*\///')
+if [ -n "$BRANCH_NAME" ] && [ "$BRANCH_NAME" != "master" ] && [ "$BRANCH_NAME" != "develop" ]; then
+	sed -i.bak -e "s/^/[$BRANCH_NAME]\ /" $1
+fi

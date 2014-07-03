@@ -1,0 +1,1 @@
+bash setup-git-hooks.sh

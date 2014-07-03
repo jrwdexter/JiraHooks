@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+
+AUTH_HASH=$(cat jira-creds)
+LAST_COMMIT=$(git log -1 HEAD --pretty=%B)
+if echo $LAST_COMMIT | grep -E "^\[[A-Za-z]+-[0-9]+\]" > /dev/null
+then
+    COMMIT_HASH=$(git log -1 HEAD --pretty=%H)
+    TICKET=$(sed -E 's/^\[([A-Za-z]*-[0-9]*)\]\s*(.*)$/\1/' <<< $LAST_COMMIT)
+    COMMENT=$(sed -E 's/^\[([A-Za-z]*-[0-9]*)\]\s*(.*)$/\2/' <<< $LAST_COMMIT)
+
+    echo "Posting comment to JIRA ticket: $TICKET"
+
+    curl -D- -X POST --data "{ \"body\": \"$COMMENT\nSHA:$COMMIT_HASH\", \"visibility\": { \"type\": \"role\", \"value\": \"Developer\" } }" -H "Authorization: Basic $AUTH_HASH" -H "Content-Type: application/json" "https://issues.nerdery.com/rest/api/2/issue/$TICKET/comment" > /dev/null
+fi
