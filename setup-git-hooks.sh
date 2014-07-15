@@ -15,7 +15,8 @@ echo -e "\n\n\033[0;34mNote:\033[0m A warning looking like 'WARNING: can't open 
 echo -e "\nPlease enter your JIRA \033[0;31musername\033[0m: "
 read USERNAME
 echo -e "\nPlease enter your JIRA \033[0;31mpassword\033[0m: "
-read PASSWORD
+read -s PASSWORD
+echo
 
 openssl enc -base64 <<< "$USERNAME:$PASSWORD" > "$DIR/jira-creds"
 
